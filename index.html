@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ALUMNUS | Media & Creative Job Directory</title>
+<meta name="description" content="Hand-picked job boards, schemes, groups and careers pages for graduates in film, TV, digital, journalism, games and VFX.">
+<meta name="theme-color" content="#0A0A0A">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230A0A0A'/><text x='50' y='68' font-size='56' text-anchor='middle' fill='white' font-family='Georgia'>A</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0A;--card:#121212;--panel:#181818;--text:#F5F5F3;--muted:#8E8E93;--dim:#5A5A5E;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.15);
+  --serif:"Cormorant Garamond",Georgia,serif;--sans:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:300 15px/1.6 var(--sans);display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+body.locked{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:1px solid #fff;outline-offset:3px}
+::selection{background:#fff;color:#000}
+
+header{display:flex;justify-content:center;padding:1.25rem 1.5rem;border-bottom:1px solid var(--line)}
+.brand{font-size:.72rem;letter-spacing:.45em;text-transform:uppercase;font-weight:300;padding-left:.45em}
+.brand:hover{opacity:.7}
+
+main{flex:1;padding:1.25rem clamp(1rem,2vw,2rem);display:flex}
+.tiles{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,1.5vw,1.5rem);min-height:600px;height:calc(100vh - 140px)}
+.tile{display:flex;flex-direction:column;background:var(--card);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:4px;overflow:hidden;cursor:pointer;text-align:left}
+.tile-bar{display:flex;justify-content:space-between;align-items:center;padding:.55rem .75rem;border-bottom:1px solid var(--line)}
+.dots{display:flex;gap:6px;align-items:center}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.25);transition:background .3s,transform .3s}
+.dot.on{background:#fff;transform:scale(1.25)}
+.tile-label{font:400 9px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:#6b6b6f}
+.view{position:relative;flex:1;overflow:hidden;border-radius:0 0 7px 7px;background:#1a1a1a}
+.view img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1s ease,transform .9s cubic-bezier(.16,1,.3,1),filter .6s}
+.view img.on{opacity:1}
+.tile:hover .view img{transform:scale(1.05);filter:brightness(1.05)}
+.overlay{position:absolute;inset:0;display:flex;align-items:flex-end;padding:clamp(1.25rem,2.2vw,2rem);background:linear-gradient(to top,rgba(0,0,0,.9),rgba(0,0,0,.2) 50%,transparent);transition:background .5s}
+.tile:hover .overlay{background:linear-gradient(to top,rgba(0,0,0,1),rgba(0,0,0,.25) 55%,transparent)}
+.overlay-inner{display:flex;justify-content:space-between;align-items:flex-end;width:100%;gap:1rem}
+.overlay h2{font:300 clamp(2rem,3.4vw,3.2rem)/1.05 var(--serif);letter-spacing:.02em;margin:0;transition:transform .3s}
+.tile:hover .overlay h2{transform:translateX(4px)}
+.overlay small{display:block;font:400 10px var(--mono);letter-spacing:.2em;color:#9a9a9e;margin-top:.6rem;text-transform:uppercase}
+.arrow{font:400 .8rem var(--mono);color:#9a9a9e;transition:color .3s}
+.tile:hover .arrow{color:#fff}
+
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem;padding:1rem clamp(1rem,2.5vw,2.5rem);border-top:1px solid var(--line);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#6b6b6f}
+
+/* panel */
+.modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:clamp(.75rem,3vw,2.5rem);background:rgba(0,0,0,.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);opacity:0;transition:opacity .3s}
+.modal[hidden]{display:none}
+.modal.show{opacity:1}
+.sheet{width:100%;max-width:64rem;height:88vh;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line2);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6);transform:scale(.96);transition:transform .3s cubic-bezier(.16,1,.3,1)}
+.modal.show .sheet{transform:none}
+.sheet-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem;padding:clamp(1.25rem,3vw,2rem);border-bottom:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.4)}
+.meta{display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem;font:400 10px var(--mono);letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+.badge{color:#fff;background:rgba(255,255,255,.1);padding:.25rem .6rem;border-radius:4px;letter-spacing:.3em}
+.sheet-head h3{font:300 clamp(2rem,4.5vw,3.2rem)/1 var(--serif);margin:0;letter-spacing:.02em}
+.close{font:400 11px var(--mono);letter-spacing:.15em;color:var(--muted);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.65rem 1rem}
+.close:hover{color:#fff;border-color:rgba(255,255,255,.3)}
+.controls{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.75rem;padding:.75rem clamp(1.25rem,3vw,2rem);border-bottom:1px solid var(--line);background:rgba(24,24,24,.5)}
+.filters{display:flex;gap:.35rem;overflow-x:auto;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.filters button{flex:none;font:500 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:.4rem .75rem;border-radius:4px}
+.filters button:hover{color:#fff}
+.filters button[aria-pressed="true"]{color:#fff;background:rgba(255,255,255,.1)}
+.right{display:flex;gap:.75rem;align-items:center;flex:1 1 16rem;justify-content:flex-end}
+.north{font:500 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:.4rem .75rem;white-space:nowrap}
+.north[aria-pressed="true"]{color:#000;background:#fff;border-color:#fff}
+.search{flex:1;max-width:16rem;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.45rem .75rem;font:300 12px var(--sans);color:#fff;outline:0;min-width:0}
+.search:focus{border-color:rgba(255,255,255,.3)}
+.search::placeholder{color:#6b6b6f}
+.list{flex:1;overflow-y:auto;padding:clamp(1.25rem,3vw,2rem)}
+.list::-webkit-scrollbar{width:4px}.list::-webkit-scrollbar-thumb{background:#282828;border-radius:2px}
+.group{margin-bottom:2rem}
+.group h4{font:400 10px var(--mono);letter-spacing:.25em;text-transform:uppercase;color:#6b6b6f;margin:0 0 .75rem}
+.res{display:flex;justify-content:space-between;align-items:center;gap:1rem;background:var(--panel);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1rem 1.25rem;margin-bottom:.6rem;transition:border-color .3s}
+.res:hover{border-color:rgba(255,255,255,.3)}
+.res-tags{display:flex;gap:.4rem;margin-bottom:.35rem}
+.res-tags span{font:400 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:.15rem .45rem;border-radius:4px;color:#fff;background:rgba(255,255,255,.1)}
+.res-tags span.ghost{background:none;border:1px solid rgba(255,255,255,.1);color:var(--muted)}
+.res-name{font:400 1.1rem/1.3 var(--sans);color:#fff;margin:0}
+.res.missing .res-name{color:var(--dim)}
+.actions{display:flex;gap:.5rem;flex:none}
+.copy{border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.55rem;color:var(--muted);display:grid;place-items:center}
+.copy:hover{color:#fff;border-color:rgba(255,255,255,.3)}
+.visit{background:#fff;color:#000;font:500 11px var(--sans);letter-spacing:.1em;text-transform:uppercase;padding:.6rem 1rem;border-radius:8px;white-space:nowrap}
+.visit:hover{background:#ddd}
+.empty{padding:4rem 1rem;text-align:center;color:var(--muted)}
+.sheet-foot{display:flex;justify-content:space-between;padding:.9rem 1.5rem;border-top:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.6);font:400 10px var(--mono);letter-spacing:.15em;text-transform:uppercase;color:#6b6b6f}
+.toast{position:fixed;right:1.5rem;bottom:calc(1.5rem + env(safe-area-inset-bottom,0px));z-index:60;background:#fff;color:#000;font:500 12px var(--sans);padding:.75rem 1rem;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.4);transform:translateY(150%);opacity:0;transition:transform .3s cubic-bezier(.16,1,.3,1),opacity .3s}
+.toast.show{transform:none;opacity:1}
+
+@media (max-width:52rem){
+  .tiles{grid-template-columns:1fr;height:auto;min-height:0}
+  .tile{height:72vh;min-height:420px}
+  .res{flex-direction:column;align-items:flex-start}
+  .right{justify-content:flex-start}
+  .search{max-width:none}
+  .sheet{height:92vh}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* full-bleed tiles */
+header,footer,.tile-bar{display:none}
+main{padding:0}
+.tiles{height:100vh;height:100dvh;min-height:0;gap:0}
+.tile{border:0;border-radius:0;padding:0;background:#000}
+.view{border-radius:0}
+.tile+.tile{border-left:1px solid rgba(255,255,255,.08)}
+@media (max-width:52rem){.tiles{height:auto}.tile{height:100vh;height:100dvh;min-height:0}.tile+.tile{border-left:0;border-top:1px solid rgba(255,255,255,.08)}}
+</style>
+</head>
+<body>
+
+<header><a class="brand" href="#">Alumnus</a></header>
+
+<h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Alumnus graduate job index</h1>
+<main><div class="tiles" id="tiles"></div></main>
+
+<footer>
+  <span>© 2026 Alumnus. Graduate job index.</span>
+  <span id="contactSlot">By Rich Greatrex</span>
+</footer>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div>
+        <div class="meta"><span class="badge" id="mBadge"></span><span>•</span><span id="mCount"></span></div>
+        <h3 id="mTitle"></h3>
+      </div>
+      <button class="close" id="mClose">[ Esc / Close ]</button>
+    </div>
+    <div class="controls">
+      <div class="filters" id="mFilters" role="group" aria-label="Filter by type"></div>
+      <div class="right">
+        <button class="north" id="mNorth" aria-pressed="false">North only</button>
+        <input class="search" id="mSearch" type="search" placeholder="Search resources…" aria-label="Search resources">
+      </div>
+    </div>
+    <div class="list" id="mList"></div>
+    <div class="sheet-foot"><span>Hand-picked links</span><span>alumnus.tv</span></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status">Link copied</div>
+
+<script>
+/* =========================================================
+   alumnus.tv  –  job hunting links
+   HOW TO EDIT: one line per link
+   ["Section", "Name", "URL", "tags"]
+
+   Course tags : tv film journo sport games photo writing all
+                 ("all" shows under every course)
+   Type tags   : board  (job boards & recruiters)
+                 social (Facebook / X / Linktree groups)
+                 company (company careers pages)
+                 scheme (schemes, training, funding, competitions)
+   Region tag  : north (Yorkshire & the North)
+
+   Empty URL "" = hidden on the live page (visible with ?edit).
+   ========================================================= */
+
+const SITE = {
+  // Paste your Buttondown / Mailchimp form action URL here to switch the sign-up on
+  signupAction: "",
+  // Links with no URL are hidden. Add ?edit to the page address to see them, e.g. alumnus.tv/?edit
+  SHOW_MISSING: false
+};
+
+// "Start here" picks shown at the top (names must match exactly)
+const FEATURED = ["BBC Careers","Channel 4 Careers","https://careers.channel4.com/4jobs","Creative Access","The Unit List","Screen Yorkshire – CoSE:Y craft certificates"];
+
+const LINKS = [
+// ---------- Job boards & recruiters
+["Job boards & recruiters","Broadcast Jobs","https://www.broadcastjobs.co.uk","tv film journo sport board"],
+["Job boards & recruiters","The Dots – production jobs","https://the-dots.co.uk/jobs/Production/?&industry_id=439&country_id=3","all board"],
+["Job boards & recruiters","Creative Access","https://creativeaccess.org.uk","all board scheme"],
+["Job boards & recruiters","Creative Careers Club – starting out jobs","https://jobs.creativecareers.club/","all board"],
+["Job boards & recruiters","Creative recruitment agencies with entry-level jobs","https://www.creativecareers.club/post/creative-recruitment-agencies-with-entry-level-junior-jobs","all board"],
+["Job boards & recruiters","CrewHQ","https://crewhq.co.uk/","tv film board"],
+["Job boards & recruiters","CallTime Recruitment","https://calltimecompany.com/","tv film board"],
+["Job boards & recruiters","Grapevine Jobs","http://www.grapevinejobs.co.uk/jobseeker/mediajobs.aspx","tv film board"],
+["Job boards & recruiters","Guardian Media Jobs","https://jobs.theguardian.com/jobs/media/","tv journo writing board"],
+["Job boards & recruiters","Location Works","http://www.locationworks.com/jobs/","tv film board"],
+["Job boards & recruiters","media beans","https://mediabeans.io/opportunities/film-and-tv/","tv film board"],
+["Job boards & recruiters","People In Production","http://wearepip.com/contact/","tv film board"],
+["Job boards & recruiters","Production Managers Association","http://www.pma.org.uk/","tv film board"],
+["Job boards & recruiters","Searchlight","http://www.searchlight.com/vacancies/Vacancies","tv film board"],
+["Job boards & recruiters","Start In TV","http://www.startintv.com/","tv board"],
+["Job boards & recruiters","Talent Bases jobs board","https://www.talentbases.com/jobboard/list","tv film board"],
+["Job boards & recruiters","The Callsheet","https://www.thecallsheet.co.uk","tv film board"],
+["Job boards & recruiters","The Crewing Company","http://www.thecrewingcompany.com/","tv film board"],
+["Job boards & recruiters","The Talent Manager","https://www.thetalentmanager.co.uk/tv-jobs","tv film board"],
+["Job boards & recruiters","The Unit List","https://www.theunitlist.com","tv film board"],
+["Job boards & recruiters","TV Collective – jobs & opportunities","http://www.thetvcollective.org/category/jobs/","tv board"],
+["Job boards & recruiters","DIVERSE – jobs","https://www.wearediversejobs.io/","tv film board"],
+["Job boards & recruiters","The Media Mentor","https://x.com/themediamentor","tv board social"],
+["Job boards & recruiters","The Media Mentor – blog","https://www.themediamentor.info/blog","tv board"],
+["Job boards & recruiters","Gary Taphouse – sports media jobs","https://x.com/garytaphouse","sport journo board social"],
+["Job boards & recruiters","The TV Watercooler – where are the runner jobs?","https://tvwatercooler.org/latest/i-am-a-tv-runner-where-are-all-the-jobs","tv board"],
+["Job boards & recruiters","Bright Network","https://www.brightnetwork.co.uk","all board"],
+["Job boards & recruiters","Creative Lives in Progress","https://www.creativelivesinprogress.com","all board"],
+
+// ---------- Social groups
+["Facebook & social groups","Connected Campus Opportunities","https://www.facebook.com/groups/connectedcampus","all social"],
+["Facebook & social groups","People in TV: Runners","https://www.facebook.com/groups/tv.runners/","tv social"],
+["Facebook & social groups","People in TV: Jobs","https://www.facebook.com/groups/peoplewhoknowpeopleintv/","tv social"],
+["Facebook & social groups","People in TV: Available","https://www.facebook.com/groups/availableforworkintv/","tv social"],
+["Facebook & social groups","TV Talent North","https://www.facebook.com/groups/958623744555057","tv social north"],
+["Facebook & social groups","GrittyTalent","https://linktr.ee/GrittyTalent","tv film social"],
+["Facebook & social groups","lovingyourwork","https://linktr.ee/lovingyourwork","tv film social"],
+["Facebook & social groups","Location Department Juniors","https://www.facebook.com/groups/2047322668911457/","film tv social"],
+["Facebook & social groups","CREW ME NOW","https://www.facebook.com/groups/43111129255/","film tv social"],
+["Facebook & social groups","UK Film Jobs","https://www.facebook.com/groups/ukfilmjobs","film social"],
+["Facebook & social groups","TV & Film Jobs in the UK","https://www.facebook.com/groups/TV.Film.Jobs.in.the.Uk","film tv social"],
+["Facebook & social groups","Film & TV Production Crew UK","https://www.facebook.com/groups/1488896431399686","film tv social"],
+
+// ---------- Broadcasters & studios
+["Broadcasters & media companies","BBC Careers","https://www.bbc.co.uk/careers/","tv journo sport writing company"],
+["Broadcasters & media companies","Channel 4 Careers","https://careers.channel4.com/4jobs","tv company"],
+["Broadcasters & media companies","ITV Jobs","https://www.itvjobs.com","tv journo sport company"],
+["Broadcasters & media companies","ITN","https://careers-itn.icims.com/jobs/intro","journo tv company"],
+["Broadcasters & media companies","Sky Careers","https://careers.sky.com","tv journo sport company"],
+["Broadcasters & media companies","STV Productions","http://www.stvproductions.tv/careers/","tv company"],
+["Broadcasters & media companies","UKTV vacancies","http://corporate.uktv.co.uk/working-at-uktv/article/vacancies-and-applying/","tv company"],
+["Broadcasters & media companies","Paramount (MTV, Comedy Central, Nickelodeon, Channel 5)","https://paramountcareers.uk/entry-level-programmes/","tv company scheme"],
+["Broadcasters & media companies","Warner Bros. Discovery early careers","https://careers.wbd.com/global/en/wbd-internships-early-careers","tv film company scheme"],
+["Broadcasters & media companies","NBCUniversal internships","https://www.nbcunicareers.com/internships","tv film company scheme"],
+["Broadcasters & media companies","Netflix intern programme","https://jobs.netflix.com/intern-program","tv film company scheme"],
+["Broadcasters & media companies","Disney Careers","http://disneycareers.co.uk/en/search-jobs/advanced-search/","tv film company scheme"],
+["Broadcasters & media companies","Lionsgate UK","http://www.lionsgatefilms.co.uk/corporate/recruitment","film company"],
+["Broadcasters & media companies","VICE Careers","https://company.vice.com/careers/","tv journo company"],
+["Broadcasters & media companies","IMG Careers","https://www.img.com/careers","sport tv company"],
+["Broadcasters & media companies","Red Bull Jobs","http://jobs.redbull.com/uk/en","sport tv company"],
+["Broadcasters & media companies","Merky FC","https://www.merkyfc.com/","all company scheme"],
+["Broadcasters & media companies","TikTok graduate schemes","https://careers.tiktok.com/campus/project/emea","all company scheme"],
+
+// ---------- Schemes
+["Schemes, training & funding","ITV Academy / Early Careers","https://careers.itv.com/teams/early-careers","tv scheme"],
+["Schemes, training & funding","Channel 4 Production Training & Content Creatives schemes","https://careers.channel4.com/4skills/production-training-scheme","tv scheme"],
+["Schemes, training & funding","BBC Early Careers","https://careers.bbc.co.uk/content/EC_Home/?locale=en_GB","tv journo scheme"],
+["Schemes, training & funding","Sky Early Careers","https://careers.sky.com/earlycareers/internships","tv sport scheme"],
+["Schemes, training & funding","Screen Yorkshire – CoSE:Y craft certificates","https://www.screenyorkshire.co.uk/craftcourses/cosey-uk-film-tv-craft-certificate-my-first-factual-tv-job/","tv film scheme north"],
+["Schemes, training & funding","Screen Yorkshire – Production Assistant (Scripted) certificate","https://www.screenyorkshire.co.uk/craftcourses/uk-film-tv-craft-certificate-production-assistant-scripted/","film tv scheme north"],
+["Schemes, training & funding","Channel 4 Content Creatives (Leeds & Manchester)","https://c4contentcreatives.com/TheProgramme","tv film scheme north"],
+["Schemes, training & funding","Channel 4 – 4Skills","https://careers.channel4.com/4skills","tv scheme"],
+["Schemes, training & funding","Northern Film + Media – funding & opportunities","https://northernmedia.org/funding-and-opportunities/","film tv scheme north"],
+["Schemes, training & funding","Creative England","https://www.creativeengland.co.uk","film tv games scheme"],
+["Schemes, training & funding","BFI NETWORK – funding","https://network.bfi.org.uk/funding-and-resources","film writing scheme"],
+["Schemes, training & funding","UK Film – sources of funding","https://www.weareukfilm.com/sources-of-funding/uk-film-makers","film scheme"],
+["Schemes, training & funding","RTS Futures","","tv scheme"],
+["Schemes, training & funding","Neal Street Productions bursary","https://nealstreetproductions.com/bursary-recipients/","film tv scheme"],
+["Schemes, training & funding","Shooting People","https://shootingpeople.org","film scheme"],
+
+// ---------- Diversity
+["Diversity & access","Creative Access","https://creativeaccess.org.uk","all scheme"],
+["Diversity & access","TV Collective – opportunities","http://www.thetvcollective.org/category/opportunities/","tv scheme"],
+["Diversity & access","DIVERSE","https://www.wearediversejobs.io/","tv film scheme"],
+["Diversity & access","Access:VFX","https://accessvfx.org","games scheme"],
+
+// ---------- Northern companies
+["TV & film companies in the North","Air TV","https://airtv.co.uk/","tv company north"],
+["TV & film companies in the North","Art of Truth","https://www.artoftruth.co.uk/","tv company north"],
+["TV & film companies in the North","Button Down (York)","https://www.button-down.co.uk","tv company north"],
+["TV & film companies in the North","Candour (Leeds)","https://candour.tv","tv company north"],
+["TV & film companies in the North","Can Can Productions (Leeds)","https://cancanproductions.co.uk/","tv company north"],
+["TV & film companies in the North","ClockWork Films (Leeds)","https://www.clockworkfilms.co.uk/","tv company north"],
+["TV & film companies in the North","Daisybeck Studios","https://www.daisybeckstudios.com/","tv company north"],
+["TV & film companies in the North","Duck Soup Films (Leeds)","https://www.ducksoupfilms.com/news","film tv company north"],
+["TV & film companies in the North","Lifted Entertainment (ITV Studios)","https://liftedentertainment.com/","tv company north"],
+["TV & film companies in the North","Meridian Line Films","https://www.meridianlinefilms.tv/","tv company north"],
+["TV & film companies in the North","Nine Lives Media","http://www.ninelivesmedia.co.uk/","tv company north"],
+["TV & film companies in the North","Quay Street Productions","https://www.quaystreetproductions.co.uk/","tv company north"],
+["TV & film companies in the North","Red Production Company","http://www.redproductioncompany.com/","tv film company north"],
+["TV & film companies in the North","Rollem Productions (Leeds)","http://www.rollemproductions.co.uk/","tv film company north"],
+["TV & film companies in the North","The Garden","https://www.thegarden.tv/","tv company north"],
+["TV & film companies in the North","True North","https://www.truenorth.tv/","tv company north"],
+["TV & film companies in the North","Warp Films","http://warpfilms.com/","film company north"],
+["TV & film companies in the North","Wise Owl Films","https://www.wiseowlfilms.com/","tv company north"],
+["TV & film companies in the North","Production Park Studios","https://www.productionparkstudios.co.uk/","tv film company north"],
+["TV & film companies in the North","Manchester Studios","https://manchesterstudios.co.uk/services/","tv film company north"],
+["TV & film companies in the North","dock10 (MediaCityUK)","https://www.dock10.co.uk/about/careers/","tv company north"],
+["TV & film companies in the North","Prime Studios (Leeds)","http://primestudios.co.uk/","tv film company north"],
+
+// ---------- Film & drama
+["Film & drama companies","BAFTA","https://www.bafta.org/jobs/internships","film tv scheme"],
+["Film & drama companies","Working Title","https://www.workingtitlefilms.com/action/","film company"],
+["Film & drama companies","Tiger Aspect","https://www.tigeraspect.co.uk/recruitment/","tv film company"],
+["Film & drama companies","Lime Pictures – internships","https://www.limepictures.com/join-us/internships","tv company north"],
+["Film & drama companies","Perspective Pictures","https://www.perspectivepictures.com/careers/","film tv company"],
+
+// ---------- Writing
+["Writing & development","BBC Writersroom","https://www.bbc.co.uk/writersroom/opportunities/","writing tv film scheme"],
+["Writing & development","BAFTA Rocliffe New Writing Competition","https://www.rocliffe.com/competitions.php","writing film tv scheme"],
+["Writing & development","Red Planet Prize","https://redplanetpictures.co.uk/the-red-planet-prize","writing tv scheme"],
+["Writing & development","Alfred Fagon Award","https://www.alfredfagonaward.co.uk/","writing scheme"],
+["Writing & development","BAFTA Guru","https://guru.bafta.org/","writing film tv games scheme"],
+
+// ---------- Journalism & sport
+["Journalism & sport","Guardian Digital Journalist Scheme (video, audio & pictures)","https://opportunities.creativeaccess.org.uk/job/guardian-digital-journalist-scheme-video-audio-and-pictures-pathway-47302","journo scheme"],
+["Journalism & sport","BBC Early Careers – journalism","https://careers.bbc.co.uk/content/Early-Careers/","journo scheme"],
+["Journalism & sport","ITV News traineeship","https://careers.itv.com/teams/media-entertainment/itv-news/itv-news-apprenticeship","journo scheme"],
+["Journalism & sport","Sky journalism apprenticeship","https://careers.sky.com/earlycareers/apprenticeships/content/journalism","journo sport scheme"],
+["Journalism & sport","Journo Resources – graduate schemes list","https://www.journoresources.org.uk/journalism-graduate-trainee-schemes-complete-list/","journo scheme"],
+["Journalism & sport","Journo Resources – jobs & internships","https://www.journoresources.org.uk/journalism-jobs-internships/","journo board"],
+["Journalism & sport","Journo Resources – ITV News traineeship guide","https://www.journoresources.org.uk/the-itv-academy-news-traineeship-complete-guide/","journo scheme"],
+["Journalism & sport","NCTJ jobs board","https://www.nctj.com/find-a-job/jobs-board/","journo sport board"],
+["Journalism & sport","Bauer Media jobs","https://jobs.bauermedia.com/","journo company"],
+["Journalism & sport","HoldTheFrontPage jobs","https://www.holdthefrontpage.co.uk/jobsboard/","journo sport board"],
+["Journalism & sport","Bloomberg – news & media","https://www.bloomberg.com/company/what-we-do/news-media/","journo company"],
+["Journalism & sport","Cision jobs – journalist","https://www.cisionjobs.co.uk/jobs/journalist/","journo board"],
+["Journalism & sport","UK JournoHub – careers","https://www.ukjournohub.com/careers","journo board"],
+["Journalism & sport","Journalism.co.uk jobs","https://www.journalism.co.uk/media-reporter-jobs/s64/","journo board"],
+["Journalism & sport","FT early careers","https://aboutus.ft.com/careers/early-careers","journo company scheme"],
+["Journalism & sport","John Schofield Trust","https://johnschofieldtrust.org.uk/","journo scheme"],
+["Journalism & sport","Scott Trust Bursary (Guardian)","https://workforus.theguardian.com/entry-level-opportunities/scott-trust-bursaries/","journo scheme"],
+["Journalism & sport","Guardian Foundation – media careers directory","https://theguardianfoundation.org/programmes/behind-the-headlines/media-careers-advice/media-careers-directory","journo board"],
+["Journalism & sport","Guardian Foundation – Media Makers","https://theguardianfoundation.org/programmes/media-makers","journo scheme"],
+["Journalism & sport","Stern-Bryan Fellowship (City, University of London)","https://www.city.ac.uk/prospective-students/finance/funding/stern-bryan-fellowship","journo scheme"],
+["Journalism & sport","Richard Beeston Bursary (The Times)","https://richardbeestonbursary.com/","journo scheme"],
+["Journalism & sport","The Telegraph – current openings","https://apply.workable.com/telegraph/","journo company"],
+["Journalism & sport","Telegraph early careers","https://careers.telegraph.co.uk/working-at-telegraph-media-group/early-careers","journo company scheme"],
+["Journalism & sport","News UK vacancies","https://www.newscareers.co.uk/vacancies/vacancy-search-results.aspx","journo sport company"],
+["Journalism & sport","Pitch – Young Sports Journalist of the Year","https://www.pitch-mag.co.uk/young-sports-journalist-competition","sport journo scheme"],
+["Journalism & sport","Gary Taphouse – sports media jobs (Bluesky)","https://bsky.app/profile/garytaphouse.bsky.social","sport journo social"],
+["Journalism & sport","Buzz 16","https://www.buzz16.uk/","sport company"],
+["Journalism & sport","GRV Media","https://grv.media/careers/","sport journo company"],
+["Journalism & sport","Sky Sports vacancies","https://www.skysports.com/more-sports/story-telling/29876/12219134/work-for-sky-sports-latest-vacancies-and-opportunities","sport company"],
+["Journalism & sport","GiveMeSport","https://www.givemesport.com/work-with-us/","sport journo company"],
+["Journalism & sport","Snack Media jobs","https://www.snack-media.com/category/jobs/","sport journo company"],
+["Journalism & sport","DAZN careers","https://careers.dazn.com/","sport company"],
+["Journalism & sport","Footballco careers","https://www.footballco.com/jobs","sport journo company"],
+["Journalism & sport","Jobs in Football – media","https://jobsinfootball.com/categories/media/","sport board"],
+["Journalism & sport","Jobs in Football","https://jobsinfootball.com/","sport board"],
+["Journalism & sport","EFL vacancies","https://irecruit.efl.com/vacancies/vacancy-search-results.aspx","sport company"],
+["Journalism & sport","BBC Sport Jobs (X)","https://twitter.com/bbcsportjobs","sport journo social"],
+["Journalism & sport","Formula 1 careers","https://corp.formula1.com/careers/","sport company"],
+["Journalism & sport","Motorsport Jobs","https://www.motorsportjobs.com/en","sport board"],
+["Journalism & sport","York City FC careers","https://www.yorkcityfootballclub.co.uk/get-in-touch/careers","sport company north"],
+["Journalism & sport","Manchester United careers","https://careers.manutd.com/","sport company north"],
+["Journalism & sport","City Football Group careers","https://www.cityfootballgroup.com/careers","sport company north"],
+["Journalism & sport","The FA careers","https://careers.thefa.com/jobs/vacancy/find/results/","sport company"],
+["Journalism & sport","Premier League careers","https://www.premierleague.com/en/about/careers","sport company"],
+
+// ---------- Radio & music
+["Radio, audio & music","RadioTodayJobs","https://radiotodayjobs.com/","journo sport board"],
+["Radio, audio & music","Bauer Media – work experience","https://www.bauermedia.co.uk/join/work-experience-opportunities/","journo sport company scheme"],
+["Radio, audio & music","YO1 Radio – work experience","https://www.yo1radio.co.uk/community/work-experience/","journo company north"],
+["Radio, audio & music","Global Careers","https://jobs.global.com/gb/en","journo company"],
+["Radio, audio & music","Sony Music UK – internships","https://www.sonymusic.co.uk/careers/internships/","all company scheme"],
+["Radio, audio & music","Spotify – students","https://www.lifeatspotify.com/students","all company scheme"],
+["Radio, audio & music","Audible UK","https://www.audiblecareers.com/UK-Internship-Content-Page","writing company"],
+["Radio, audio & music","News UK – News Academy","https://www.news.co.uk/more-than-the-news/news-academy/","journo sport scheme"],
+
+// ---------- Photography
+["Photography","Royal Photographic Society – opportunities","https://rps.org/opportunities/","photo scheme"],
+["Photography","AOP – careers & awards","https://www.the-aop.org/information/the-industry/careers","photo board scheme"],
+["Photography","1854 Commissions","https://www.1854.photography/commissions/","photo scheme"],
+["Photography","GRAIN – internships","https://grainphotographyhub.co.uk/portfolio-type/internship/","photo scheme north"],
+["Photography","Fashion photography jobs & internships","https://www.fashionworkie.com/offered-industry-area/photography-film","photo board"],
+["Photography","Impressions Gallery – opportunities","https://www.impressions-gallery.com/opportunities/","photo scheme north"],
+["Photography","Arts Jobs","https://www.artsjobs.org.uk/search/node","photo writing board"],
+["Photography","AOP Awards","https://www.aopawards.com/","photo scheme"],
+["Photography","Prodoto (Manchester & Leeds)","https://www.prodoto.com/","photo company north"],
+["Photography","Pure Photography Studio (Leeds)","https://www.purephotographystudio.co.uk/","photo company north"],
+["Photography","Bright Network – photography","https://www.brightnetwork.co.uk/search/?s=photography","photo board"],
+["Photography","Powerhouse","https://www.wearepowerhousestudios.com/about-us/","photo company"],
+["Photography","Pure Agency (Leeds)","https://www.pureagency.co.uk/services/photography/","photo company north"],
+["Photography","DARE (Leeds)","https://darestudios.co.uk/","photo company north"],
+["Photography","Story Film & Photography (Bradford)","https://www.storyfp.co.uk/","photo company north"],
+["Photography","PiXL (Leeds)","https://www.wearepixl.co.uk/","photo company north"],
+["Photography","Hylton","https://www.hyltonphotography.co.uk/","photo company"],
+["Photography","Aire Street Studio (Leeds)","https://www.airestreetstudioleeds.co.uk/","photo company north"],
+
+// ---------- Publishing
+["Publishing & digital marketing","DK Careers","https://www.dk.com/uk/information/careers-at-dk/","writing company"],
+["Publishing & digital marketing","HarperCollins UK","https://corporate.harpercollins.co.uk/careers/early-careers/","writing company"],
+["Publishing & digital marketing","Penguin WriteNow","https://www.penguin.co.uk/company/social-impact/writenow","writing scheme"],
+["Publishing & digital marketing","The Spare Room Project – London housing for interns","https://thespareroomproject.co.uk/","writing scheme"],
+["Publishing & digital marketing","Creative Access – publishing jobs","https://opportunities.creativeaccess.org.uk/jobs/book-newspaper-magazine-publishing/junior?field_job_experience=1410","writing board"],
+["Publishing & digital marketing","Bright Network – marketing, media & PR internships","https://www.brightnetwork.co.uk/internships/marketing-media-pr/","all board"],
+["Publishing & digital marketing","Milkround – digital marketing internships","https://www.milkround.com/jobs/digital-marketing-internship","all board"],
+["Publishing & digital marketing","The Dots – digital marketing internships","https://the-dots.com/jobs/search/digital-marketing-internships","all board"],
+["Publishing & digital marketing","Creative Careers Club – publishing jobs","https://jobs.creativecareers.club/jobs/publishing","writing board"],
+["Publishing & digital marketing","Creative Careers Club – getting into publishing","https://www.creativecareers.club/post/how-do-i-get-a-graduate-entry-level-job-in-books-and-publishing","writing board"],
+["Publishing & digital marketing","DMA Talent mentoring","","all scheme"],
+["Publishing & digital marketing","Engage – paid digital internship (Leeds)","https://engageinteractive.co.uk/academy/internship","all company north"],
+
+// ---------- VFX
+["VFX","Access:VFX","https://accessvfx.org/","games scheme"],
+["VFX","BlueBolt","https://www.blue-bolt.com/hiring","games film company"],
+["VFX","Cinesite","https://www.cinesite.com/careers/","games film company"],
+["VFX","Crafty Apes","https://www.craftyapes.com/career","games film company"],
+["VFX","DNEG","https://www.dneg.com/careers/","games film company"],
+["VFX","Do it Creative","https://dcreative.co.uk/career/","games company"],
+["VFX","Dupe VFX","https://dupevfx.com/careers/","games film company"],
+["VFX","Electric Theatre Collective","http://electrictheatre.tv/blog/careers","games company"],
+["VFX","Firebrand VFX","https://www.firebrandvfx.com/#contact","games company"],
+["VFX","FixFX","https://www.fixfx.uk/jobs","games company"],
+["VFX","Framestore","https://www.framestore.com/careers","games film company"],
+["VFX","Freefolk","https://freefolk.com/jobs/","games company"],
+["VFX","Ghost VFX","https://www.ghostvfx.com/join-the-team","games film company"],
+["VFX","Goodbye Kansas","https://career.goodbyekansas.com/jobs","games company"],
+["VFX","iGene Media","https://www.igenemedia.com/careers/","games company"],
+["VFX","Important Looking Pirates","https://www.ilpvfx.com/career","games film company"],
+["VFX","Imaginarium Studios","https://www.imaginariumstudios.co.uk/contact-us","games company"],
+["VFX","Industrial Light & Magic","https://www.ilm.com/careers/","games film company"],
+["VFX","Lexhag","https://lexhag.co.uk/#contact","games company"],
+["VFX","Light VFX","https://lightvfx.com/careers","games company"],
+["VFX","Lightrunner Studio","https://lightrunnerstudio.com/","games company"],
+["VFX","Lunar FX","https://lunarfx.co.uk/contact","games company"],
+["VFX","Lux Aeterna","https://www.lavfx.com/careers","games company"],
+["VFX","Magic Dust VFX","https://www.magicdustvfx.com/contact","games company"],
+["VFX","Milk VFX","https://www.milk-vfx.com/careers/","games film company"],
+["VFX","Moonraker VFX","https://moonrakervfx.com/contact/","games company"],
+["VFX","One Of Us","https://careers.weacceptyou.com/","games film company"],
+["VFX","Outpost VFX","https://outpost-vfx.com/en/careers","games company"],
+["VFX","Pixomondo","https://www.pixomondo.com/careers","games film company"],
+["VFX","Primary VFX","https://www.primaryvfx.com/pages/contact","games company"],
+["VFX","Rise FX","https://risefx.com/rise-visual-effects-studios-jobs.php","games company"],
+["VFX","Scanline VFX","https://scanlinevfx.com/careers/","games film company"],
+["VFX","Territory Studio","https://territorystudio.com/jobs/","games company"],
+["VFX","The Flying Colour Company","https://www.theflyingcolourcompany.com/contact/","games company"],
+["VFX","The Third Floor (previz)","https://thethirdfloorinc.com/careers/","games film company"],
+["VFX","The Yard VFX","https://careers.theyard-vfx.com/en-GB/jobs","games company"],
+["VFX","Union VFX","https://unionvfx.com/careers","games film company"],
+["VFX","Vine FX","http://vinefx.com/#contact","games company"],
+["VFX","Viridian FX","https://www.viridianfx.co.uk/joinus/","games company"],
+
+// ---------- Post production
+["Post production","Active Pixel","https://activepixel.co.uk/home/contact-us/","tv film company"],
+["Post production","Adrenaline Studios","https://adrenaline.global/how/","tv film company"],
+["Post production","Association of Motion Picture Sound","https://www.amps.net/contact/","tv film company"],
+["Post production","Aquarium Studios","https://www.aquariumstudios.co.uk/careers/","tv film company"],
+["Post production","Boom Post","https://www.boompost.co.uk/careers/","tv film company"],
+["Post production","Cinelab","https://www.cinelab.co.uk/careers","film company"],
+["Post production","Clear Cut Pictures","https://www.clearcut.cc/about/clear-cut-careers/","tv film company"],
+["Post production","Company 3","https://www.company3.com/careers/","tv film company"],
+["Post production","Core Post","https://corepost.co.uk/","tv film company"],
+["Post production","Digital Orchard","https://digitalorchardgroup.com/careers/","tv film company"],
+["Post production","Dirty Looks","https://dirtylooks.co.uk/","tv film company"],
+["Post production","Disauthority","https://disauthority.com/contact/","tv film company"],
+["Post production","dock10","https://www.dock10.co.uk/about/getintouch/","tv company north"],
+["Post production","Envy Post Production","https://www.envypost.co.uk/careers/","tv film company"],
+["Post production","Fifty Fifty Post","https://fiftyfiftypost.com/contact/","tv film company"],
+["Post production","Films@59","https://filmsat59.com/careers/","tv film company"],
+["Post production","Fitzrovia Post","https://www.fitzroviapost.com/reach-out","tv film company"],
+["Post production","Formosa Group","https://formosagroup.com/employment-opportunities/","tv film company"],
+["Post production","Fuse Post","https://www.fusepost.co.uk/","tv film company"],
+["Post production","Gorilla Group","https://gorillagroup.tv/en/careers/","tv film company"],
+["Post production","Harbor (incl. CHEAT)","https://harborpicturecompany.com/careers/","tv film company"],
+["Post production","Hireworks","https://hireworks.tv/contact/","tv film company"],
+["Post production","Lipsync Post","https://lipsyncpost.co.uk/contact-us/","tv film company"],
+["Post production","Lola Post Production","http://www.lola-post.com/careers/","tv film company"],
+["Post production","Molinare","https://molinare.co.uk/culture/#for-us-block","tv film company"],
+["Post production","NextGen Skills Academy","https://www.nextgenskillsacademy.com/","games scheme"],
+["Post production","ONSIGHT","https://onsight.co.uk/contact/","tv film company"],
+["Post production","Peacock Sound","https://www.peacocksound.co.uk/contact/","tv film company"],
+["Post production","Platform Post Production","https://www.platformpp.tv/careers","tv film company"],
+["Post production","Post Super","https://post-super.com/contact-us","tv film company"],
+["Post production","Radiant Post / Rapid Pictures","https://radiantpostgroup.co.uk/join-us/","tv film company"],
+["Post production","Residence Pictures","https://www.residence.pics/jobs/","tv film company"],
+["Post production","Ruben Sogomonian Colour","https://www.rubensogomonian.com/contact","tv film company"],
+["Post production","Salon","https://www.linkedin.com/company/salonlimited/jobs/","tv film company"],
+["Post production","Soho Editors","https://sohoeditors.com/vacancies","tv film board"],
+["Post production","Streamland Media","https://www.pictureshop.com/get-in-touch","tv film company"],
+["Post production","The Finish Line","https://thefinishline.pro/contact/","tv film company"],
+["Post production","The Independent Post Company","https://indepost.co.uk/contact/","tv film company"],
+["Post production","The Look","https://thelooklondon.com/contact/","tv film company"],
+["Post production","Tin Can Post","http://www.tincanpost.co.uk/contact/","tv film company"],
+["Post production","TVC Soho","https://tvcsoho.com/","tv film company"],
+["Post production","Warner Bros De Lane Lea","https://www.warnerbros.co.uk/info/careers","film company"],
+["Post production","West Digital","https://www.westdigital.co.uk/sayhello","tv film company"],
+["Post production","Yellowmoon","http://www.yellowmoon.net/contact","tv film company"],
+
+// ---------- Animation
+["Animation","Moose Brain Studio","https://www.linkedin.com/in/moose-brain-studio-b67256233/","games company"],
+["Animation","3D Sparrow","https://www.3dsparrow.com/contacts","games company"],
+["Animation","A Productions","https://aproductions.co.uk/jobs/","games company"],
+["Animation","A+C Studios","https://www.aplusc.tv/careers","games company"],
+["Animation","Aardman","https://www.aardman.com/careers/","games film company"],
+["Animation","Acamar Films","http://www.acamarfilms.com/careers/","games company"],
+["Animation","ALT Animation","https://www.altanimation.com/","games company"],
+["Animation","Aniboxx","https://www.aniboxx.com/contact/","games company"],
+["Animation","Animation Associates","http://www.animation-associates.co.uk/opportunities/4593527396","games company"],
+["Animation","Anthem Studios","https://www.anthemstudios.com/","games company"],
+["Animation","Beakus","https://www.beakus.com/hiring","games company"],
+["Animation","Blink Industries","https://www.blinkindustries.tv/jobs","games company"],
+["Animation","Blue Zoo","https://careers.blue-zoo.co.uk/","games company"],
+["Animation","Bomper Studio","https://bomperstudio.com/careers","games company"],
+["Animation","Cake Entertainment","https://cakeentertainment.com/jobs-at-cake","games company"],
+["Animation","Cantilever Group","https://www.cantilever.media/contact/","games company"],
+["Animation","Carse & Waterman","https://carseandwaterman.com/","games company"],
+["Animation","Cloth Cat Animation","https://clothcat.com/careers/","games company"],
+["Animation","Dog Ears","http://www.cheersdogears.com/jobs/","games company"],
+["Animation","Don Dada Studio","https://www.dondada.studio/careers","games company"],
+["Animation","Eagle Vs Bat","https://www.eaglevsbat.com/","games company"],
+["Animation","Eaglet Films","https://eagletfilms.com/contact/","games company"],
+["Animation","Enter Yes","http://www.enteryes.com/","games company"],
+["Animation","Eye Present","https://www.eyepresent.co.uk/info-contact","games company"],
+["Animation","Eyebolls","https://www.eyebolls.com/contact","games company"],
+["Animation","Flipbook Studio","https://www.flipbookstudio.co.uk/careers-flipbookstudio-co-uk/","games company"],
+["Animation","Flying Duck Studio Lab","https://flyingduckstudiolab.co.uk/contact-us","games company"],
+["Animation","GFM Animation","https://gfmanimation.com/about/contact/","games company"],
+["Animation","Grizzle","https://grizzle.london/contact","games company"],
+["Animation","HaZimation","https://hazimation.com/contact","games company"],
+["Animation","Hocus Pocus Studio","https://www.hocuspocus.studio/jobs","games company"],
+["Animation","Hoho Entertainment","https://www.hohoentertainment.com/contact/","games company"],
+["Animation","Interference Pattern","https://www.interferencepattern.com/jobs/","games company"],
+["Animation","JAM Media","https://www.jammedia.com/about/careers/","games company"],
+["Animation","Jellyfish Pictures","https://jellyfishpictures.com/join-us","games film company"],
+["Animation","Karrot Entertainment","https://www.linkedin.com/company/karrot-animation/jobs/","games company"],
+["Animation","Kelebek Media","https://www.kelebekmedia.com/contact","games company"],
+["Animation","Keyframe Studios","https://keyframestudios.co.uk/keyframe-careers","games company"],
+["Animation","King Banana TV","https://www.kingbananatv.com/contact","games company"],
+["Animation","King Bee","https://www.kingbee.co.uk/contact-us/","games company"],
+["Animation","Kong Studio","https://kong-studio.com/jobs/","games company"],
+["Animation","Lil Critter Workshop","https://www.lilcritterworkshop.tv/contact","games company"],
+["Animation","Locksmith Animation","https://locksmithanimation.com/careers","games film company"],
+["Animation","Lupus Films","https://www.lupusfilms.com/contact","games company"],
+["Animation","Mackinnon & Saunders","https://www.mackinnonandsaunders.com/jobs","games company north"],
+["Animation","Madmicrobe","https://www.madmicrobe.com/jobs","games company"],
+["Animation","Magic Light Pictures","https://www.magiclightpictures.com/working-at-magic-light-pictures/","games company"],
+["Animation","Moonbug","https://apply.workable.com/moonbug-entertainment/?lng=en","games company"],
+["Animation","Move Animation Studio","https://www.moveanimation.com/contact-us","games company"],
+["Animation","Myth Studio","https://www.mythstudio.co.uk/contact","games company"],
+["Animation","Nutmeg Animations","https://www.nutmegsoccergirl.com/contact/","games company"],
+["Animation","Omens Studio","https://www.omens-studios.com/","games company"],
+["Animation","Paper Owl Films","https://paperowlfilms.com/#contact","games company"],
+["Animation","Passion Pictures","https://www.passion-pictures.com/join-us/","games company"],
+["Animation","Picl Animation","https://www.piclanimation.com/contact","games company"],
+["Animation","Picturesmith","https://picturesmith.com/contact/","games company"],
+["Animation","Plastic Milk","https://www.plasticmilk.co.uk/contact","games company"],
+["Animation","Plus3k Animation","https://plus3k.tv/contact/","games company"],
+["Animation","Red Star 3D","https://www.redstar3d.com/jobs/","games company"],
+["Animation","Ritzy Animation","https://www.ritzyanimation.com/careers","games company"],
+["Animation","Rumpus Animation","https://rumpusanimation.com/contact/","games company"],
+["Animation","Rusty Monkey","https://www.rustymonkey.com/careers","games company"],
+["Animation","Salamandra","https://www.salamandra.uk/contact","games company"],
+["Animation","Scribble Room Animation","https://scribbleroomanimation.com/jobs","games company"],
+["Animation","Second Home Studios","https://www.secondhomestudios.com/contact/join-the-team/","games company"],
+["Animation","Sixteen South","https://sixteensouth.tv/contact","games company"],
+["Animation","Snafu Pictures","https://snafu-pictures.com/about/","games company"],
+["Animation","Space Age Films","https://spaceagefilms.co.uk/contact-2/","games company"],
+["Animation","Studio AKA","https://studioaka.co.uk/contacts/#Vacancies","games company"],
+["Animation","Studio Liddell","https://studioliddell.com/contact-us","games company"],
+["Animation","Sun & Moon Studios","https://jobs.sunandmoonstudios.co.uk/","games company"],
+["Animation","Tapocketa","https://www.tapocketa.com/contact","games company"],
+["Animation","TAUNT","https://www.tauntstudios.com/contact","games company"],
+["Animation","Tentacle Media","https://www.tentaclemedia.co.uk/contact","games company"],
+["Animation","The 2D Workshop","https://www.the2dworkshop.com/","games company"],
+["Animation","Tiger Aspect Kids & Family","https://www.tigeraspect.co.uk/contact-us/","games tv company"],
+["Animation","Timeless Films","https://timelessfilms.co.uk/about","games company"],
+["Animation","Tinmouse Animation","https://www.tinmouseanimation.com/contact","games company"],
+["Animation","Two Daughters Entertainment","https://www.linkedin.com/company/two-daughters-entertainment/jobs/","games company"],
+["Animation","Venture Videos","https://www.venturevideos.com/careers","games company"],
+["Animation","Wheel in Motion","https://www.linkedin.com/company/wheel-in-motion/jobs/","games company"],
+["Animation","Wild Child Animation","https://wildchildanimation.com/careers/","games company"],
+["Animation","Wildseed Studios","https://wildseedstudios.com/jobs","games company"],
+["Animation","Yamination","https://www.yamination.com/","games company"],
+];
+
+</script>
+<script>
+/* ===== EDIT HERE =====
+   images: list your own photos, e.g. ["images/film1.jpg","images/film2.jpg"] (one dot per photo).
+           The Unsplash photos below are placeholders.
+   tags:   which links.js tags each tile shows                                              */
+const CONTACT_EMAIL = "";   // e.g. "rich@alumnus.tv"
+const TILES = [
+  {id:"film-tv-digital", title:"Film, TV, Digital", badge:"Film & broadcast", tags:["tv","film","photo","writing"], general:true,
+   images:["https://images.unsplash.com/photo-1612544409025-e1f6a56c1152?auto=format&fit=crop&w=1200&q=85"], style:"grayscale(1) contrast(1.25) brightness(.9)"},
+  {id:"journalism", title:"Journalism", badge:"Press & editorial", tags:["journo","sport"], first:["Journalism & sport"],
+   images:["https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=85"], style:"brightness(.9) contrast(1.1)"},
+  {id:"games-vfx", title:"Games & VFX", badge:"Interactive & 3D", tags:["games"], first:["VFX","Animation","Post production"],
+   images:["https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?auto=format&fit=crop&w=1200&q=85"], style:"contrast(1.1)"}
+];
+const SLIDE_SECONDS = 5;
+/* ===================== */
+
+const TYPES=[["any","All"],["board","Job boards"],["scheme","Schemes"],["social","Groups"],["company","Companies"]];
+const TYPE_NAMES={board:"Job board",scheme:"Scheme",social:"Group",company:"Careers"};
+const SHOW_MISSING=SITE.SHOW_MISSING||new URLSearchParams(location.search).has("edit");
+const data=LINKS.map(([g,n,u,t])=>({g,n,u,t:t.split(/\s+/)})).filter(l=>l.u||SHOW_MISSING);
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const linksFor=t=>data.filter(l=>(t.general&&l.t.includes("all"))||t.tags.some(x=>l.t.includes(x)));
+const reduced=matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+if(CONTACT_EMAIL)$("contactSlot").innerHTML=`<a href="mailto:${esc(CONTACT_EMAIL)}">Contact</a>`;
+
+/* tiles */
+$("tiles").innerHTML=TILES.map((t,i)=>`
+  <a class="tile" href="#${t.id}" aria-label="${esc(t.title)}: ${linksFor(t).length} links">
+    <div class="tile-bar">
+      <div class="dots">${t.images.map((_,j)=>`<span class="dot${j===0?" on":""}"></span>`).join("")}</div>
+      <span class="tile-label">${String(i+1).padStart(2,"0")} // Job directory</span>
+    </div>
+    <div class="view">
+      ${t.images.map((src,j)=>`<img src="${esc(src)}" alt="" class="${j===0?"on":""}" style="filter:${t.style||"none"}" loading="${j===0?"eager":"lazy"}">`).join("")}
+      <div class="overlay"><div class="overlay-inner">
+        <div><h2>${esc(t.title)}</h2><small>${linksFor(t).length} links</small></div>
+        <span class="arrow" aria-hidden="true">↗</span>
+      </div></div>
+    </div>
+  </a>`).join("");
+
+/* carousels */
+document.querySelectorAll(".tile").forEach(tile=>{
+  const imgs=[...tile.querySelectorAll("img")],dots=[...tile.querySelectorAll(".dot")];
+  if(imgs.length<2||reduced)return;
+  let i=0;
+  setInterval(()=>{
+    i=(i+1)%imgs.length;
+    imgs.forEach((x,j)=>x.classList.toggle("on",j===i));
+    dots.forEach((x,j)=>x.classList.toggle("on",j===i));
+  },SLIDE_SECONDS*1000+Math.random()*800);
+});
+
+/* panel */
+const st={tile:null,type:"any",north:false,q:""};
+TYPES.forEach(([k,l])=>{const b=document.createElement("button");b.textContent=l;b.dataset.k=k;b.onclick=()=>{st.type=k;draw()};$("mFilters").appendChild(b)});
+$("mSearch").oninput=e=>{st.q=e.target.value.trim().toLowerCase();draw()};
+$("mNorth").onclick=()=>{st.north=!st.north;draw()};
+$("mClose").onclick=()=>{history.pushState("",document.title,location.pathname+location.search);route()};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("modal").hidden)$("mClose").click()});
+$("modal").addEventListener("click",e=>{if(e.target.id==="modal")$("mClose").click()});
+
+function draw(){
+  document.querySelectorAll("#mFilters button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===st.type));
+  $("mNorth").setAttribute("aria-pressed",st.north);
+  const all=linksFor(st.tile);
+  const hits=all.filter(l=>(st.type==="any"||l.t.includes(st.type))&&(!st.north||l.t.includes("north"))&&(!st.q||(l.n+" "+l.g).toLowerCase().includes(st.q)));
+  $("mCount").textContent=`${hits.length} of ${all.length} links`;
+  if(!hits.length){$("mList").innerHTML=`<div class="empty">No links match. Try another filter or search.</div>`;return}
+  const g=new Map();(st.tile.first||[]).forEach(n=>g.set(n,[]));hits.forEach(l=>{if(!g.has(l.g))g.set(l.g,[]);g.get(l.g).push(l)});[...g].forEach(([k,v])=>{if(!v.length)g.delete(k)});
+  $("mList").innerHTML=[...g].map(([name,ls])=>`<section class="group"><h4>${esc(name)}</h4>${ls.map(l=>{
+    const kind=TYPE_NAMES[l.t.find(x=>TYPE_NAMES[x])]||"";
+    const tags=`<div class="res-tags">${kind?`<span>${kind}</span>`:""}${l.t.includes("north")?`<span class="ghost">North</span>`:""}</div>`;
+    return l.u
+      ?`<div class="res"><div>${tags}<p class="res-name">${esc(l.n)}</p></div><div class="actions">
+          <button class="copy" data-url="${esc(l.u)}" aria-label="Copy link to ${esc(l.n)}"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg></button>
+          <a class="visit" href="${esc(l.u)}" target="_blank" rel="noopener">Visit ↗</a></div></div>`
+      :`<div class="res missing"><div>${tags}<p class="res-name">${esc(l.n)}</p></div><span class="tile-label">URL needed</span></div>`;
+  }).join("")}</section>`).join("");
+}
+$("mList").addEventListener("click",async e=>{
+  const b=e.target.closest(".copy");if(!b)return;
+  try{await navigator.clipboard.writeText(b.dataset.url)}catch{const i=document.createElement("input");i.value=b.dataset.url;document.body.appendChild(i);i.select();document.execCommand("copy");i.remove()}
+  $("toast").classList.add("show");clearTimeout(window.tt);window.tt=setTimeout(()=>$("toast").classList.remove("show"),2200);
+});
+
+let lastFocus=null;
+function route(){
+  const t=TILES.find(x=>"#"+x.id===location.hash);
+  const m=$("modal");
+  if(t){
+    Object.assign(st,{tile:t,type:"any",north:false,q:""});$("mSearch").value="";
+    $("mTitle").textContent=t.title;$("mBadge").textContent=t.badge;
+    document.title=t.title+" | ALUMNUS";
+    draw();$("mList").scrollTop=0;
+    if(m.hidden){lastFocus=document.activeElement;m.hidden=false;document.body.classList.add("locked");requestAnimationFrame(()=>m.classList.add("show"));$("mClose").focus()}
+  }else if(!m.hidden){
+    document.title="ALUMNUS | Media & Creative Job Directory";
+    m.classList.remove("show");document.body.classList.remove("locked");
+    setTimeout(()=>{m.hidden=true;lastFocus&&lastFocus.focus()},reduced?0:300);
+  }
+}
+window.addEventListener("hashchange",route);route();
+</script>
+</body>
+</html>
