@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ALUMNUS | Media & Creative Job Directory</title>
+<title>Alumnus · Graduate job links</title>
 <meta name="description" content="Hand-picked job boards, schemes, groups and careers pages for graduates in film, TV, digital, journalism, games and VFX.">
 <meta name="theme-color" content="#0A0A0A">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230A0A0A'/><text x='50' y='68' font-size='56' text-anchor='middle' fill='white' font-family='Georgia'>A</text></svg>">
@@ -733,11 +733,11 @@ function route(){
   if(t){
     Object.assign(st,{tile:t,type:"any",north:false,q:"",sec:"",view:"form"});$("mSearch").value="";
     $("mTitle").textContent=t.title;$("mBadge").textContent=t.badge;
-    document.title=t.title+" | ALUMNUS";
+    document.title=t.title+" · Alumnus";
     draw();$("mList").scrollTop=0;
     if(m.hidden){lastFocus=document.activeElement;m.hidden=false;document.body.classList.add("locked");requestAnimationFrame(()=>m.classList.add("show"));$("mClose").focus()}
   }else if(!m.hidden){
-    document.title="ALUMNUS | Media & Creative Job Directory";
+    document.title="Alumnus · Graduate job links";
     m.classList.remove("show");document.body.classList.remove("locked");
     setTimeout(()=>{m.hidden=true;lastFocus&&lastFocus.focus()},reduced?0:300);
   }
