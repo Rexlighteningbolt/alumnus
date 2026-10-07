@@ -173,7 +173,12 @@ a.rrow:hover{background:rgba(255,255,255,.06);color:#fff}
 .brandmark b{display:block;font:500 clamp(18px,1.6vw,24px) var(--sans);letter-spacing:.45em;color:#fff}
 .brandmark span{display:block;margin-top:.6rem;font:400 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.75);max-width:30rem;line-height:1.6}
 .view::before{content:"";position:absolute;inset:0 0 auto 0;height:11rem;background:linear-gradient(to bottom,rgba(0,0,0,.65),transparent);z-index:1;pointer-events:none}
-@media (max-width:52rem){.brandmark span{max-width:14rem}}
+@media (max-width:52rem){
+  .brandmark{position:absolute;left:1.1rem;top:calc(1.1rem + env(safe-area-inset-top,0px))}
+  .brandmark b{font-size:17px;letter-spacing:.35em}
+  .brandmark span{font-size:9.5px;letter-spacing:.12em;max-width:11.5rem;margin-top:.45rem}
+  .alerts-btn{padding:.55rem .85rem;font-size:10px;letter-spacing:.1em;right:.9rem}
+}
 </style>
 </head>
 <body>
@@ -210,7 +215,7 @@ a.rrow:hover{background:rgba(255,255,255,.06);color:#fff}
   </div>
 </div>
 
-<button class="alerts-btn" id="alertsBtn">Weekly job alerts</button>
+<button class="alerts-btn" id="alertsBtn" aria-label="Weekly job alerts">Job alerts</button>
 
 <div class="modal" id="sModal" hidden role="dialog" aria-modal="true" aria-labelledby="sTitle">
   <div class="sheet small">
