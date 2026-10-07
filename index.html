@@ -167,6 +167,13 @@ a.rrow:hover{background:rgba(255,255,255,.06);color:#fff}
   .sheet-foot span{display:none}
   .sheet-foot{justify-content:center}
 }
+
+/* brand top-left */
+.brandmark{position:fixed;top:calc(1.1rem + env(safe-area-inset-top,0px));left:1.4rem;z-index:40;pointer-events:none;text-shadow:0 1px 12px rgba(0,0,0,.5)}
+.brandmark b{display:block;font:500 clamp(18px,1.6vw,24px) var(--sans);letter-spacing:.45em;color:#fff}
+.brandmark span{display:block;margin-top:.6rem;font:400 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.75);max-width:30rem;line-height:1.6}
+.view::before{content:"";position:absolute;inset:0 0 auto 0;height:11rem;background:linear-gradient(to bottom,rgba(0,0,0,.65),transparent);z-index:1;pointer-events:none}
+@media (max-width:52rem){.brandmark span{max-width:14rem}}
 </style>
 </head>
 <body>
@@ -174,6 +181,7 @@ a.rrow:hover{background:rgba(255,255,255,.06);color:#fff}
 <header><a class="brand" href="#">Alumnus</a></header>
 
 <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Alumnus graduate job index</h1>
+<div class="brandmark" aria-hidden="true"><b>ALUMNUS</b><span>Graduate job links for film, TV, journalism &amp; games</span></div>
 <main><div class="tiles" id="tiles"></div></main>
 
 <footer>
