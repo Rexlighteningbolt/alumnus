@@ -179,6 +179,16 @@ a.rrow:hover{background:rgba(255,255,255,.06);color:#fff}
   .brandmark span{font-size:9.5px;letter-spacing:.12em;max-width:11.5rem;margin-top:.45rem}
   .alerts-btn{padding:.55rem .85rem;font-size:10px;letter-spacing:.1em;right:.9rem}
 }
+
+/* mobile scroll cue */
+.scroll-cue{display:none}
+@media (max-width:52rem){
+  .tile:first-child .overlay{padding-bottom:3.6rem}
+  .scroll-cue{display:flex;flex-direction:column;align-items:center;gap:.2rem;position:fixed;left:50%;bottom:calc(.9rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;font:400 9px var(--mono);letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.8);pointer-events:none;transition:opacity .4s}
+  .scroll-cue i{font-style:normal;font-size:16px;animation:cue 1.8s ease-in-out infinite}
+  .scroll-cue.gone{opacity:0}
+}
+@keyframes cue{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
 </style>
 </head>
 <body>
@@ -187,6 +197,7 @@ a.rrow:hover{background:rgba(255,255,255,.06);color:#fff}
 
 <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Alumnus graduate job index</h1>
 <div class="brandmark" aria-hidden="true"><b>ALUMNUS</b><span>Graduate job links for film, TV, journalism &amp; games</span></div>
+<div class="scroll-cue" id="cue" aria-hidden="true">More<i>↓</i></div>
 <main><div class="tiles" id="tiles"></div></main>
 
 <footer>
@@ -754,6 +765,7 @@ sm.addEventListener("click",e=>{if(e.target===sm)closeAlerts()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!sm.hidden){e.stopImmediatePropagation();closeAlerts()}},true);
 if(SITE.signupAction){$("sForm").action=SITE.signupAction}
 else{$("sForm").onsubmit=e=>{e.preventDefault();$("sNote").textContent="Sign-ups open soon – thanks for your interest!"}}
+window.addEventListener("scroll",()=>$("cue").classList.toggle("gone",scrollY>40),{passive:true});
 window.addEventListener("hashchange",route);route();
 </script>
 </body>
