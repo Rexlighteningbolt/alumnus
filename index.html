@@ -158,6 +158,15 @@ a.rrow:hover{background:rgba(255,255,255,.06);color:#fff}
 .finder.live .ghost[aria-pressed="true"]{background:#fff;color:#000;border-color:#fff}
 .live-count{font:400 10px var(--mono);letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:0 0 .25rem}
 @media (max-width:52rem){.finder.live{grid-template-columns:1fr 1fr}.finder.live input{grid-column:1/-1}.finder.live .ghost{grid-column:1/-1}}
+
+/* mobile tidy */
+.finder select{padding-right:2.75rem!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:52rem){
+  .meta{flex-wrap:wrap;gap:.4rem .6rem}
+  .badge{white-space:nowrap}
+  .sheet-foot span{display:none}
+  .sheet-foot{justify-content:center}
+}
 </style>
 </head>
 <body>
@@ -644,7 +653,7 @@ $("tiles").innerHTML=TILES.map((t,i)=>`
     <div class="view">
       ${t.images.map((src,j)=>`<img src="${esc(src)}" alt="" class="${j===0?"on":""}" style="filter:${t.style||"none"}" loading="${j===0?"eager":"lazy"}">`).join("")}
       <div class="overlay"><div class="overlay-inner">
-        <div><h2>${esc(t.title)}</h2><small>${linksFor(t).length} links</small></div>
+        <div><h2>${esc(t.title)}</h2></div>
         <span class="arrow" aria-hidden="true">↗</span>
       </div></div>
     </div>
@@ -675,12 +684,12 @@ const AREA=(l,sec)=>{if(!sec)return true;const k=sec[0],v=sec.slice(2);return k=
 function draw(){
   const all=linksFor(st.tile);
   $("mList").innerHTML=`<div class="finder live">
-    <select id="fSec" aria-label="Specialism"><option value="">All specialisms…</option>${(st.tile.areas||[]).map(([l,f])=>`<option value="${esc(f)}">${esc(l)}</option>`).join("")}</select>
+    <select id="fSec" aria-label="Specialism"><option value="">All areas</option>${(st.tile.areas||[]).map(([l,f])=>`<option value="${esc(f)}">${esc(l)}</option>`).join("")}</select>
     <select id="fType" aria-label="Type of link">${TYPES.map(([k])=>`<option value="${k}"></option>`).join("")}</select>
     <input id="fQ" type="search" placeholder="Search a company or site…" aria-label="Search" autocomplete="off">
     <button class="ghost" id="fNorth" aria-pressed="false">North only</button>
   </div><div id="fRes"></div>`;
-  const syncTypes=()=>{[...$("fType").options].forEach(o=>{const n=all.filter(l=>AREA(l,st.sec)&&(!st.north||l.t.includes("north"))&&(o.value==="any"||l.t.includes(o.value))).length;const base=o.value==="any"?"Any type of link…":TYPES.find(t=>t[0]===o.value)[1];o.textContent=o.value==="any"?base:`${base} (${n})`;o.disabled=!n&&o.value!=="any"});if($("fType").selectedOptions[0].disabled){$("fType").value="any";st.type="any"}};
+  const syncTypes=()=>{[...$("fType").options].forEach(o=>{const n=all.filter(l=>AREA(l,st.sec)&&(!st.north||l.t.includes("north"))&&(o.value==="any"||l.t.includes(o.value))).length;const base=o.value==="any"?"Any type":TYPES.find(t=>t[0]===o.value)[1];o.textContent=o.value==="any"?base:`${base} (${n})`;o.disabled=!n&&o.value!=="any"});if($("fType").selectedOptions[0].disabled){$("fType").value="any";st.type="any"}};
   $("fSec").onchange=e=>{st.sec=e.target.value;syncTypes();results()};
   $("fType").onchange=e=>{st.type=e.target.value;results()};
   $("fQ").oninput=e=>{st.q=e.target.value.trim().toLowerCase();results()};
