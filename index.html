@@ -293,20 +293,20 @@ const FEATURED = ["BBC Careers","Channel 4 Careers","https://careers.channel4.co
 /* =========================================================
    LATEST JOBS – add one line per job, newest first.
    topic: "film-tv-digital" | "journalism" | "games-vfx"
-   closes: closing date YYYY-MM-DD (job hides itself after this date)
+   added: date you added it. closes: closing date if known (YYYY-MM-DD).
+   A job hides after its closing date, or JOB_MAX_DAYS after "added" if no closing date.
    ========================================================= */
 const JOBS_UPDATED = "21 Oct 2026";
 const JOBS = [
-  {title:"Runner – factual entertainment", company:"Example Productions", location:"Leeds", type:"Entry level", topic:"film-tv-digital", closes:"2026-11-07", url:"#"},
-  {title:"Edit Assistant", company:"Example Post House", location:"Manchester", type:"Freelance", topic:"film-tv-digital", closes:"2026-11-14", url:"#"},
-  {title:"Production Trainee scheme", company:"Example Broadcaster", location:"London / Leeds", type:"Scheme", topic:"film-tv-digital", closes:"2026-12-01", url:"#"},
-  {title:"Junior Social Video Producer", company:"Example Digital Agency", location:"Remote", type:"Full time", topic:"film-tv-digital", closes:"2026-11-21", url:"#"},
-  {title:"Trainee Reporter", company:"Example Regional News", location:"York", type:"Entry level", topic:"journalism", closes:"2026-11-10", url:"#"},
-  {title:"Sports Content Assistant", company:"Example Sports Media", location:"Salford", type:"Full time", topic:"journalism", closes:"2026-11-28", url:"#"},
-  {title:"Junior Compositor", company:"Example VFX Studio", location:"London", type:"Entry level", topic:"games-vfx", closes:"2026-11-18", url:"#"},
-  {title:"QA Tester", company:"Example Games Studio", location:"Leeds", type:"Contract", topic:"games-vfx", closes:"2026-11-30", url:"#"},
+  {title:"Junior Shooter Editor", company:"Global", location:"", type:"", topic:"film-tv-digital", added:"2026-10-21", closes:"", url:"https://lnkd.in/euEtW838"},
+  {title:"Social Media Content Producer", company:"", location:"Leeds", type:"", topic:"film-tv-digital", added:"2026-10-21", closes:"", url:"https://lnkd.in/eYPtU4jA"},
+  {title:"Junior Producer", company:"Little Dot Studios", location:"", type:"", topic:"film-tv-digital", added:"2026-10-21", closes:"", url:"https://lnkd.in/eQRPNr7g"},
+  {title:"Production Assistant", company:"Extreme Music", location:"", type:"", topic:"film-tv-digital", added:"2026-10-21", closes:"", url:"https://www.linkedin.com/jobs/view/4477190389/"},
+  {title:"Online Journalist", company:"", location:"Leeds", type:"", topic:"journalism", added:"2026-10-21", closes:"", url:"https://www.linkedin.com/jobs/view/4476041371/"},
+  {title:"Production Assistant", company:"Premier League Studios", location:"", type:"", topic:"journalism", added:"2026-10-21", closes:"", url:"https://www.linkedin.com/jobs/view/4478429215/"},
 ];
-const JOBS_MOCKUP = true;   // set to false once these are real jobs
+const JOB_MAX_DAYS = 30;   // jobs with no closing date hide this many days after "added"
+const JOBS_MOCKUP = false;   // set to false once these are real jobs
 
 const LINKS = [
 // ---------- Job boards & recruiters
@@ -932,7 +932,7 @@ function route(){
 
 /* latest jobs */
 const today=new Date();today.setHours(0,0,0,0);
-const liveJobs=JOBS.filter(j=>!j.closes||new Date(j.closes)>=today);
+const liveJobs=JOBS.filter(j=>j.closes?new Date(j.closes)>=today:(!j.added||(today-new Date(j.added))/864e5<=JOB_MAX_DAYS));
 const jm=$("jModal");let jTopic="all";
 $("jobsCount").textContent=liveJobs.length||"";
 $("jUpdated").textContent=JOBS_UPDATED?"Last updated "+JOBS_UPDATED:"";
@@ -949,8 +949,8 @@ function drawJobs(){
     const days=j.closes?Math.round((new Date(j.closes)-today)/864e5):null;
     const tile=TILES.find(t=>t.id===j.topic);
     return `<div class="job"><h4>${esc(j.title)}</h4><a class="apply" href="${esc(j.url)}" target="_blank" rel="noopener">Apply ↗</a>
-      <p>${esc(j.company)} · ${esc(j.location)}</p>
-      <div class="tags">${tile?`<span>${esc(tile.title)}</span>`:""}${j.type?`<span>${esc(j.type)}</span>`:""}${j.closes?`<span class="${days<=7?"soon":""}">Closes ${fmt(j.closes)}</span>`:""}</div></div>`}).join("");
+      <p>${[j.company,j.location].filter(Boolean).map(esc).join(" · ")||"&nbsp;"}</p>
+      <div class="tags">${tile?`<span>${esc(tile.title)}</span>`:""}${j.type?`<span>${esc(j.type)}</span>`:""}${j.closes?`<span class="${days<=7?"soon":""}">Closes ${fmt(j.closes)}</span>`:(j.added?`<span>Added ${fmt(j.added)}</span>`:"")}${/linkedin|lnkd\.in/.test(j.url)?"<span>LinkedIn</span>":""}</div></div>`}).join("");
 }
 function openJobs(topic){jTopic=topic||"all";drawJobs();jm.hidden=false;document.body.classList.add("locked");requestAnimationFrame(()=>jm.classList.add("show"));$("jList").scrollTop=0}
 function closeJobs(){jm.classList.remove("show");if($("modal").hidden)document.body.classList.remove("locked");setTimeout(()=>jm.hidden=true,reduced?0:300)}
