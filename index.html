@@ -189,6 +189,26 @@ a.rrow:hover{background:rgba(255,255,255,.06);color:#fff}
   .scroll-cue.gone{opacity:0}
 }
 @keyframes cue{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+
+/* latest jobs */
+.alerts-btn em{font-style:normal;display:inline-grid;place-items:center;min-width:1.4rem;height:1.4rem;margin-left:.45rem;padding:0 .35rem;border-radius:999px;background:#fff;color:#000;font-size:10px;letter-spacing:0}
+.alerts-btn:hover em{background:#000;color:#fff}
+.jchips{display:flex;gap:.4rem;flex-wrap:wrap;padding:1rem clamp(1.25rem,3vw,2rem);border-bottom:1px solid rgba(255,255,255,.08)}
+.jchips button{font:500 11px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.5rem .85rem;border:1px solid rgba(255,255,255,.12);border-radius:999px}
+.jchips button[aria-pressed="true"]{background:#fff;color:#000;border-color:#fff}
+.job{display:grid;grid-template-columns:1fr auto;gap:.35rem 1.5rem;align-items:center;padding:1.15rem .25rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.job h4{margin:0;font:400 1.15rem/1.3 var(--sans);color:#fff}
+.job p{margin:0;color:var(--muted);font-size:.9rem}
+.job .tags{grid-column:1/-1;display:flex;gap:.5rem;flex-wrap:wrap;font:400 9px var(--mono);letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+.job .tags span{border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:.2rem .45rem}
+.job .tags .soon{color:#000;background:#fff;border-color:#fff}
+.job .apply{grid-row:1/3;grid-column:2;background:#fff;color:#000;font:500 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;padding:.7rem 1.1rem;border-radius:8px;white-space:nowrap}
+.job .apply:hover{background:#ddd}
+.mock-note{margin:0 0 .5rem;padding:.7rem .9rem;border:1px dashed rgba(255,255,255,.25);border-radius:8px;font:400 11px var(--mono);letter-spacing:.08em;color:var(--muted)}
+.topic-jobs{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin:0 0 1.25rem;padding:.9rem 1.1rem;border:1px solid rgba(255,255,255,.15);border-radius:10px;background:rgba(255,255,255,.03);color:#fff;font-size:.95rem;width:100%;text-align:left}
+.topic-jobs:hover{border-color:rgba(255,255,255,.4)}
+.topic-jobs b{font:500 11px var(--sans);letter-spacing:.12em;text-transform:uppercase}
+@media (max-width:52rem){.job{grid-template-columns:1fr}.job .apply{grid-row:auto;grid-column:1;justify-self:start;margin-top:.5rem;order:9}}
 </style>
 </head>
 <body>
@@ -222,26 +242,21 @@ a.rrow:hover{background:rgba(255,255,255,.06);color:#fff}
       </div>
     </div>
     <div class="list" id="mList"></div>
-    <div class="sheet-foot"><span>Hand-picked links</span><a href="#" class="foot-link" id="footAlerts">Get weekly job alerts</a></div>
+    <div class="sheet-foot"><span>Hand-picked links</span><a href="#" class="foot-link" id="footJobs">See latest jobs</a></div>
   </div>
 </div>
 
-<button class="alerts-btn" id="alertsBtn" aria-label="Weekly job alerts">Job alerts</button>
+<button class="alerts-btn" id="jobsBtn">Latest jobs <em id="jobsCount"></em></button>
 
-<div class="modal" id="sModal" hidden role="dialog" aria-modal="true" aria-labelledby="sTitle">
-  <div class="sheet small">
+<div class="modal" id="jModal" hidden role="dialog" aria-modal="true" aria-labelledby="jTitle">
+  <div class="sheet">
     <div class="sheet-head">
-      <div><div class="meta"><span class="badge">Free</span><span>•</span><span>Every week</span></div><h3 id="sTitle">Job alerts</h3></div>
-      <button class="close" id="sClose" aria-label="Close">← Back</button>
+      <div><div class="meta"><span class="badge">Live</span><span>•</span><span id="jMeta"></span></div><h3 id="jTitle">Latest jobs</h3></div>
+      <button class="close" id="jClose" aria-label="Back to home (Esc)">← Home</button>
     </div>
-    <div class="signup-body">
-      <p>One email a week with live graduate jobs and internships in film, TV, journalism, games and VFX.</p>
-      <form class="signup-form" id="sForm" method="post" target="_blank">
-        <input type="email" name="email" required placeholder="Your email address" aria-label="Email address" autocomplete="email">
-        <button type="submit">Sign up</button>
-      </form>
-      <p class="signup-note" id="sNote">Unsubscribe any time with one click.</p>
-    </div>
+    <div class="jchips" id="jChips" role="group" aria-label="Filter jobs by area"></div>
+    <div class="list" id="jList"></div>
+    <div class="sheet-foot"><span>Updated weekly</span><span id="jUpdated"></span></div>
   </div>
 </div>
 
@@ -274,6 +289,24 @@ const SITE = {
 
 // "Start here" picks shown at the top (names must match exactly)
 const FEATURED = ["BBC Careers","Channel 4 Careers","https://careers.channel4.com/4jobs","Creative Access","The Unit List","Screen Yorkshire – CoSE:Y craft certificates"];
+
+/* =========================================================
+   LATEST JOBS – add one line per job, newest first.
+   topic: "film-tv-digital" | "journalism" | "games-vfx"
+   closes: closing date YYYY-MM-DD (job hides itself after this date)
+   ========================================================= */
+const JOBS_UPDATED = "21 Oct 2026";
+const JOBS = [
+  {title:"Runner – factual entertainment", company:"Example Productions", location:"Leeds", type:"Entry level", topic:"film-tv-digital", closes:"2026-11-07", url:"#"},
+  {title:"Edit Assistant", company:"Example Post House", location:"Manchester", type:"Freelance", topic:"film-tv-digital", closes:"2026-11-14", url:"#"},
+  {title:"Production Trainee scheme", company:"Example Broadcaster", location:"London / Leeds", type:"Scheme", topic:"film-tv-digital", closes:"2026-12-01", url:"#"},
+  {title:"Junior Social Video Producer", company:"Example Digital Agency", location:"Remote", type:"Full time", topic:"film-tv-digital", closes:"2026-11-21", url:"#"},
+  {title:"Trainee Reporter", company:"Example Regional News", location:"York", type:"Entry level", topic:"journalism", closes:"2026-11-10", url:"#"},
+  {title:"Sports Content Assistant", company:"Example Sports Media", location:"Salford", type:"Full time", topic:"journalism", closes:"2026-11-28", url:"#"},
+  {title:"Junior Compositor", company:"Example VFX Studio", location:"London", type:"Entry level", topic:"games-vfx", closes:"2026-11-18", url:"#"},
+  {title:"QA Tester", company:"Example Games Studio", location:"Leeds", type:"Contract", topic:"games-vfx", closes:"2026-11-30", url:"#"},
+];
+const JOBS_MOCKUP = true;   // set to false once these are real jobs
 
 const LINKS = [
 // ---------- Job boards & recruiters
@@ -897,17 +930,35 @@ function route(){
   }
 }
 
-/* weekly alerts sign-up */
-const sm=$("sModal");
-function openAlerts(){sm.hidden=false;document.body.classList.add("locked");requestAnimationFrame(()=>sm.classList.add("show"));setTimeout(()=>sm.querySelector("input").focus(),50)}
-function closeAlerts(){sm.classList.remove("show");if($("modal").hidden)document.body.classList.remove("locked");setTimeout(()=>sm.hidden=true,reduced?0:300)}
-$("alertsBtn").onclick=openAlerts;
-$("footAlerts").onclick=e=>{e.preventDefault();openAlerts()};
-$("sClose").onclick=closeAlerts;
-sm.addEventListener("click",e=>{if(e.target===sm)closeAlerts()});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!sm.hidden){e.stopImmediatePropagation();closeAlerts()}},true);
-if(SITE.signupAction){$("sForm").action=SITE.signupAction}
-else{$("sForm").onsubmit=e=>{e.preventDefault();$("sNote").textContent="Sign-ups open soon – thanks for your interest!"}}
+/* latest jobs */
+const today=new Date();today.setHours(0,0,0,0);
+const liveJobs=JOBS.filter(j=>!j.closes||new Date(j.closes)>=today);
+const jm=$("jModal");let jTopic="all";
+$("jobsCount").textContent=liveJobs.length||"";
+$("jUpdated").textContent=JOBS_UPDATED?"Last updated "+JOBS_UPDATED:"";
+const fmt=d=>new Date(d).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+$("jChips").innerHTML=[["all","All"],...TILES.map(t=>[t.id,t.title])].map(([k,l])=>`<button data-k="${k}">${esc(l)}</button>`).join("");
+$("jChips").onclick=e=>{const b=e.target.closest("button");if(b){jTopic=b.dataset.k;drawJobs()}};
+function drawJobs(){
+  $("jChips").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===jTopic));
+  const list=liveJobs.filter(j=>jTopic==="all"||j.topic===jTopic);
+  $("jMeta").textContent=list.length+(list.length===1?" job":" jobs");
+  const note=JOBS_MOCKUP?`<p class="mock-note">Mock-up: example jobs only</p>`:"";
+  if(!list.length){$("jList").innerHTML=note+`<div class="empty">No live jobs in this area right now. Check back next week.</div>`;return}
+  $("jList").innerHTML=note+list.map(j=>{
+    const days=j.closes?Math.round((new Date(j.closes)-today)/864e5):null;
+    const tile=TILES.find(t=>t.id===j.topic);
+    return `<div class="job"><h4>${esc(j.title)}</h4><a class="apply" href="${esc(j.url)}" target="_blank" rel="noopener">Apply ↗</a>
+      <p>${esc(j.company)} · ${esc(j.location)}</p>
+      <div class="tags">${tile?`<span>${esc(tile.title)}</span>`:""}${j.type?`<span>${esc(j.type)}</span>`:""}${j.closes?`<span class="${days<=7?"soon":""}">Closes ${fmt(j.closes)}</span>`:""}</div></div>`}).join("");
+}
+function openJobs(topic){jTopic=topic||"all";drawJobs();jm.hidden=false;document.body.classList.add("locked");requestAnimationFrame(()=>jm.classList.add("show"));$("jList").scrollTop=0}
+function closeJobs(){jm.classList.remove("show");if($("modal").hidden)document.body.classList.remove("locked");setTimeout(()=>jm.hidden=true,reduced?0:300)}
+$("jobsBtn").onclick=()=>openJobs();
+$("footJobs").onclick=e=>{e.preventDefault();openJobs(st.tile&&st.tile.id)};
+$("jClose").onclick=closeJobs;
+jm.addEventListener("click",e=>{if(e.target===jm)closeJobs()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!jm.hidden){e.stopImmediatePropagation();closeJobs()}},true);
 window.addEventListener("scroll",()=>$("cue").classList.toggle("gone",scrollY>40),{passive:true});
 window.addEventListener("hashchange",route);route();
 </script>
